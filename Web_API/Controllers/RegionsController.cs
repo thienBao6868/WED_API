@@ -42,7 +42,7 @@ namespace Web_API.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult getRegionById([FromRoute]Guid id) {
+        public IActionResult getById([FromRoute]Guid id) {
             //var region = _appApiContext.Regions.Find(id);
             var regionDomain = _appApiContext.Regions.FirstOrDefault(x => x.Id == id);
             if (regionDomain == null) {
@@ -61,7 +61,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateRegion(AddRegionDTO addRegionDTO)
+        public IActionResult Create(AddRegionDTO addRegionDTO)
         {
             var regionDomain = new Region
             {
@@ -84,7 +84,7 @@ namespace Web_API.Controllers
                 RegionImageUrl = regionDomain.RegionImageUrl
             };
 
-            return CreatedAtAction(nameof(getRegionById),new {id = regionDTO.Id}, regionDTO);
+            return CreatedAtAction(nameof(getById),new {id = regionDTO.Id}, regionDTO);
 
 
         }
