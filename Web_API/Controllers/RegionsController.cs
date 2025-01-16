@@ -61,7 +61,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(AddRegionDTO addRegionDTO)
+        public IActionResult Create([FromBody] AddRegionDTO addRegionDTO)
         {
             var regionDomain = new Region
             {
@@ -88,5 +88,36 @@ namespace Web_API.Controllers
 
 
         }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public IActionResult update([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDTO)
+        {
+            var regionDomain = _appApiContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (regionDomain == null)
+            {
+                return NotFound();
+            }
+
+            // Map Dto to Domain
+            regionDomain.Name = updateRegionDTO.Name;
+            regionDomain.Code = updateRegionDTO.Code;
+            regionDomain.RegionImageUrl = updateRegionDTO.RegionImageUrl;
+
+            _appApiContext.SaveChanges();
+
+            // Convert Domain to DTO
+            var regionDto = new RegionDTO
+            {
+                Id = regionDomain.Id,
+                Name = regionDomain.Name,
+                Code = regionDomain.Code,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+
+            return Ok(regionDto);
+
+        }
+
     }
 }
