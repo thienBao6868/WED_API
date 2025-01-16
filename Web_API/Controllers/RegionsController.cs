@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Web_API.Data;
-using Web_API.Models.DTO;
+using Web_API.Models.Domain;
+using Web_API.Models.DTO.RequestDTO;
+using Web_API.Models.DTO.ResponseDTO;
 
 namespace Web_API.Controllers
 {
@@ -56,6 +58,35 @@ namespace Web_API.Controllers
                 RegionImageUrl = regionDomain.RegionImageUrl
             };
             return Ok(regionDTO);
+        }
+
+        [HttpPost]
+        public IActionResult CreateRegion(AddRegionDTO addRegionDTO)
+        {
+            var regionDomain = new Region
+            {
+                Code = addRegionDTO.Code,
+                Name = addRegionDTO.Name,
+                RegionImageUrl = addRegionDTO.RegionImageUrl
+            };
+
+            _appApiContext.Regions.Add(regionDomain);
+            _appApiContext.SaveChanges();
+
+
+            // map to RegionDTO
+
+            var regionDTO = new RegionDTO
+            {
+                Id = regionDomain.Id,
+                Name = regionDomain.Name,
+                Code = regionDomain.Code,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+
+            return CreatedAtAction(nameof(getRegionById),new {id = regionDTO.Id}, regionDTO);
+
+
         }
     }
 }

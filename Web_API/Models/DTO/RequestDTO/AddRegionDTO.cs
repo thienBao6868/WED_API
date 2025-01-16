@@ -1,8 +1,7 @@
-﻿namespace Web_API.Models.DTO
+﻿namespace Web_API.Models.DTO.RequestDTO
 {
-    public class RegionDTO
+    public class AddRegionDTO
     {
-        public Guid Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public string? RegionImageUrl { get; set; }
