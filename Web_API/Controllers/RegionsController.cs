@@ -10,17 +10,29 @@ namespace Web_API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly AppApiDbContext _appApiContext;
-        
+
         public RegionsController(AppApiDbContext appApiContext)
         {
             this._appApiContext = appApiContext;
         }
 
         [HttpGet]
-        public IActionResult getAll() { 
+        public IActionResult getAll() {
 
             var regions = _appApiContext.Regions.ToList();
             return Ok(regions);
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public IActionResult getRegionById([FromRoute]Guid id) {
+            //var region = _appApiContext.Regions.Find(id);
+            var region = _appApiContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (region == null) {
+                return NotFound();
+            }
+            return Ok(region);
+
         }
     }
 }
