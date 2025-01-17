@@ -20,7 +20,7 @@ namespace Web_API.Controllers
         }
 
         [HttpGet]
-        public IActionResult getAll() {
+        public IActionResult GetAll() {
             // Get Region in DataBase
             var regionsDomain = _appApiContext.Regions.ToList();
 
@@ -42,7 +42,7 @@ namespace Web_API.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult getById([FromRoute]Guid id) {
+        public IActionResult GetById([FromRoute]Guid id) {
             //var region = _appApiContext.Regions.Find(id);
             var regionDomain = _appApiContext.Regions.FirstOrDefault(x => x.Id == id);
             if (regionDomain == null) {
@@ -84,14 +84,14 @@ namespace Web_API.Controllers
                 RegionImageUrl = regionDomain.RegionImageUrl
             };
 
-            return CreatedAtAction(nameof(getById),new {id = regionDTO.Id}, regionDTO);
+            return CreatedAtAction(nameof(GetById),new {id = regionDTO.Id}, regionDTO);
 
 
         }
 
         [HttpPut]
         [Route("{id:guid}")]
-        public IActionResult update([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDTO)
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDTO)
         {
             var regionDomain = _appApiContext.Regions.FirstOrDefault(x => x.Id == id);
             if (regionDomain == null)
@@ -117,6 +117,28 @@ namespace Web_API.Controllers
 
             return Ok(regionDto);
 
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var regionDomain = _appApiContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (regionDomain == null) return NotFound();
+
+            _appApiContext.Regions.Remove(regionDomain);
+            _appApiContext.SaveChanges();
+
+            // Convert Domain to DTO
+            var regionDto = new RegionDTO
+            {
+                Id = regionDomain.Id,
+                Name = regionDomain.Name,
+                Code = regionDomain.Code,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+
+            return Ok(regionDto);
         }
 
     }
