@@ -48,7 +48,7 @@ namespace Web_API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute]Guid id) {
             //var region = _appApiContext.Regions.Find(id);
-            var regionDomain = await _appApiContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            var regionDomain = await _regionRepository.getByIdAsync(id);
             if (regionDomain == null) {
                 return NotFound();
             }
@@ -73,10 +73,7 @@ namespace Web_API.Controllers
                 Name = addRegionDTO.Name,
                 RegionImageUrl = addRegionDTO.RegionImageUrl
             };
-
-            await _appApiContext.Regions.AddAsync(regionDomain);
-            await _appApiContext.SaveChangesAsync();
-
+            regionDomain = await _regionRepository.createAsync(regionDomain);
 
             // map to RegionDTO
 
@@ -97,18 +94,22 @@ namespace Web_API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDTO)
         {
-            var regionDomain = await _appApiContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
-            if (regionDomain == null)
+            // map updateRegionDTO to Region
+
+            var regionDomain = new Region
+            {
+                Code = updateRegionDTO.Code,
+                Name = updateRegionDTO.Name,
+                RegionImageUrl = updateRegionDTO.RegionImageUrl
+            };
+
+
+            regionDomain = await _regionRepository.updateAsync(id, regionDomain);
+
+            if(regionDomain == null)
             {
                 return NotFound();
             }
-
-            // Map Dto to Domain
-            regionDomain.Name = updateRegionDTO.Name;
-            regionDomain.Code = updateRegionDTO.Code;
-            regionDomain.RegionImageUrl = updateRegionDTO.RegionImageUrl;
-
-            await _appApiContext.SaveChangesAsync();
 
             // Convert Domain to DTO
             var regionDto = new RegionDTO
@@ -127,11 +128,9 @@ namespace Web_API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            var regionDomain = await _appApiContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
-            if (regionDomain == null) return NotFound();
+            var regionDomain = await _regionRepository.deleteAsync(id);
 
-            _appApiContext.Regions.Remove(regionDomain);
-            await _appApiContext.SaveChangesAsync();
+            if (regionDomain == null) return NotFound();
          
             // Convert Domain to DTO
             var regionDto = new RegionDTO
