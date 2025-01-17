@@ -6,6 +6,7 @@ using Web_API.Data;
 using Web_API.Models.Domain;
 using Web_API.Models.DTO.RequestDTO;
 using Web_API.Models.DTO.ResponseDTO;
+using Web_API.Repositories;
 
 namespace Web_API.Controllers
 {
@@ -14,16 +15,18 @@ namespace Web_API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly AppApiDbContext _appApiContext;
+        private readonly IRegionRepository _regionRepository;
 
-        public RegionsController(AppApiDbContext appApiContext)
+        public RegionsController(AppApiDbContext appApiContext,IRegionRepository regionRepository)
         {
             this._appApiContext = appApiContext;
+            this._regionRepository = regionRepository;
         }
 
         [HttpGet]
         public async  Task<IActionResult> GetAll() {
             // Get Region in DataBase
-            var regionsDomain = await _appApiContext.Regions.ToListAsync();
+            var regionsDomain = await _regionRepository.getAllAsync();
 
             // Map Data to RegionDTO
             var regionsDTO = new List<RegionDTO>();
