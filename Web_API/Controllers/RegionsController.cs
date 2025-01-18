@@ -33,8 +33,8 @@ namespace Web_API.Controllers
             var regionsDomain = await _regionRepository.getAllAsync();
 
             // Map Data to RegionDTO
-            var regionsDTO = _mapper.Map<List<RegionDTO>>(regionsDomain);
-            return Ok(regionsDTO);
+
+            return Ok(_mapper.Map<List<RegionDTO>>(regionsDomain));
         }
 
         [HttpGet]
@@ -47,36 +47,17 @@ namespace Web_API.Controllers
             }
 
             // map Data To RegionDTO
-            var regionDTO = new RegionDTO()
-            {
-                Id = regionDomain.Id,
-                Name = regionDomain.Name,
-                Code = regionDomain.Code,
-                RegionImageUrl = regionDomain.RegionImageUrl
-            };
-            return Ok(regionDTO);
+            return Ok(_mapper.Map<RegionDTO>(regionDomain));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRegionDTO addRegionDTO)
         {
-            var regionDomain = new Region
-            {
-                Code = addRegionDTO.Code,
-                Name = addRegionDTO.Name,
-                RegionImageUrl = addRegionDTO.RegionImageUrl
-            };
+            var regionDomain = _mapper.Map<Region>(addRegionDTO);
             regionDomain = await _regionRepository.createAsync(regionDomain);
 
             // map to RegionDTO
-
-            var regionDTO = new RegionDTO
-            {
-                Id = regionDomain.Id,
-                Name = regionDomain.Name,
-                Code = regionDomain.Code,
-                RegionImageUrl = regionDomain.RegionImageUrl
-            };
+            var regionDTO = _mapper.Map<RegionDTO>(regionDomain);
 
             return CreatedAtAction(nameof(GetById),new {id = regionDTO.Id}, regionDTO);
 
@@ -88,33 +69,14 @@ namespace Web_API.Controllers
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionDTO updateRegionDTO)
         {
             // map updateRegionDTO to Region
-
-            var regionDomain = new Region
-            {
-                Code = updateRegionDTO.Code,
-                Name = updateRegionDTO.Name,
-                RegionImageUrl = updateRegionDTO.RegionImageUrl
-            };
-
-
+            var regionDomain = _mapper.Map<Region>(updateRegionDTO);
             regionDomain = await _regionRepository.updateAsync(id, regionDomain);
-
             if(regionDomain == null)
             {
                 return NotFound();
             }
-
             // Convert Domain to DTO
-            var regionDto = new RegionDTO
-            {
-                Id = regionDomain.Id,
-                Name = regionDomain.Name,
-                Code = regionDomain.Code,
-                RegionImageUrl = regionDomain.RegionImageUrl
-            };
-
-            return Ok(regionDto);
-
+            return Ok(_mapper.Map<RegionDTO>(regionDomain));
         }
 
         [HttpDelete]
@@ -126,13 +88,7 @@ namespace Web_API.Controllers
             if (regionDomain == null) return NotFound();
          
             // Convert Domain to DTO
-            var regionDto = new RegionDTO
-            {
-                Id = regionDomain.Id,
-                Name = regionDomain.Name,
-                Code = regionDomain.Code,
-                RegionImageUrl = regionDomain.RegionImageUrl
-            };
+            var regionDto = _mapper.Map<RegionDTO>(regionDomain);  
 
             return Ok(regionDto);
         }
