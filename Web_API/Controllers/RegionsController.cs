@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Web_API.Data;
+using Web_API.Mappings;
 using Web_API.Models.Domain;
 using Web_API.Models.DTO.RequestDTO;
 using Web_API.Models.DTO.ResponseDTO;
@@ -16,11 +18,13 @@ namespace Web_API.Controllers
     {
         private readonly AppApiDbContext _appApiContext;
         private readonly IRegionRepository _regionRepository;
+        private readonly IMapper _mapper;
 
-        public RegionsController(AppApiDbContext appApiContext,IRegionRepository regionRepository)
+        public RegionsController(AppApiDbContext appApiContext,IRegionRepository regionRepository, IMapper mapper)
         {
             this._appApiContext = appApiContext;
             this._regionRepository = regionRepository;
+            this._mapper = mapper;
         }
 
         [HttpGet]
@@ -29,18 +33,7 @@ namespace Web_API.Controllers
             var regionsDomain = await _regionRepository.getAllAsync();
 
             // Map Data to RegionDTO
-            var regionsDTO = new List<RegionDTO>();
-
-            foreach (var region in regionsDomain) {
-
-                regionsDTO.Add(new RegionDTO()
-                {
-                    Id = region.Id,
-                    Name = region.Name,
-                    Code = region.Code,
-                    RegionImageUrl = region.RegionImageUrl
-                });
-            }
+            var regionsDTO = _mapper.Map<List<RegionDTO>>(regionsDomain);
             return Ok(regionsDTO);
         }
 
