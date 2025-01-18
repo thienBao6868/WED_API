@@ -8,7 +8,7 @@ using Web_API.Mappings;
 using Web_API.Models.Domain;
 using Web_API.Models.DTO.RequestDTO;
 using Web_API.Models.DTO.ResponseDTO;
-using Web_API.Repositories;
+using Web_API.Repositories.IRepository;
 
 namespace Web_API.Controllers
 {

@@ -8,10 +8,17 @@ namespace Web_API.Mappings
     public class AutoMapperProfiles: Profile
     {
         public AutoMapperProfiles()
-        {
+        {   
+            // Region
             CreateMap<Region, RegionDTO>().ReverseMap();
             CreateMap<Region, AddRegionDTO>().ReverseMap();
             CreateMap<Region, UpdateRegionDTO>().ReverseMap();
+
+            //Walk
+            CreateMap<Walk,AddWalkDTO>().ReverseMap();
+            CreateMap<Walk,WalkDTO>().ReverseMap();
+
+
         }
     }
 }
