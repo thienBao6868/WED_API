@@ -3,29 +3,30 @@ using Microsoft.EntityFrameworkCore;
 using Web_API.Data;
 using Web_API.Models.Domain;
 using Web_API.Models.DTO.RequestDTO;
+using Web_API.Repositories.IRepository;
 
-namespace Web_API.Repositories
+namespace Web_API.Repositories.SQLRepository
 {
-    public class SQLRegionRepository: IRegionRepository
-    {   
+    public class SQLRegionRepository : IRegionRepository
+    {
         private readonly AppApiDbContext _appApiDbContext;
 
         public SQLRegionRepository(AppApiDbContext appApiDbContext)
         {
-            this._appApiDbContext = appApiDbContext;
+            _appApiDbContext = appApiDbContext;
         }
 
-       
+
 
         public async Task<List<Region>> getAllAsync()
         {
-            return await _appApiDbContext.Regions.ToListAsync();  
+            return await _appApiDbContext.Regions.ToListAsync();
         }
 
 
         public async Task<Region?> getByIdAsync(Guid id)
         {
-            return await _appApiDbContext.Regions.FirstOrDefaultAsync(X=> X.Id == id);
+            return await _appApiDbContext.Regions.FirstOrDefaultAsync(X => X.Id == id);
         }
 
         public async Task<Region> createAsync(Region region)
@@ -36,7 +37,7 @@ namespace Web_API.Repositories
 
         }
 
-        public async Task<Region?> updateAsync(Guid id,Region region)
+        public async Task<Region?> updateAsync(Guid id, Region region)
         {
             var existingRegion = await _appApiDbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (existingRegion == null) return null;
