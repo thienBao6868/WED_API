@@ -74,5 +74,16 @@ namespace Web_API.Controllers
             // map walkDomain to walkDTO
             return Ok(_mapper.Map<WalkDTO>(walkDomain));
         }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> delete([FromRoute] Guid id)
+        {
+            var walkDomain = await _walkRepository.deleteAsync(id);
+            if(walkDomain == null) return NotFound();
+
+            // map walkDomain to walkDomainDTO
+            return Ok(_mapper.Map<WalkDTO>(walkDomain));
+        }
     }
 }

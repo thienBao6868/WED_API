@@ -24,6 +24,8 @@ namespace Web_API.Repositories.SQLRepository
 
         }
 
+       
+
         public async Task<List<Walk>> getAllAsync()
         {
             return await _appApiDbContext.Walks.Include("Region").Include("Difficulty").ToListAsync();
@@ -51,6 +53,21 @@ namespace Web_API.Repositories.SQLRepository
             existingWalk.DifficultyId = walk.DifficultyId;
 
 
+            await _appApiDbContext.SaveChangesAsync();
+
+            return existingWalk;
+
+        }
+
+        public async Task<Walk?> deleteAsync(Guid id)
+        {
+            var existingWalk = await _appApiDbContext.Walks.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingWalk == null)
+            {
+                return null;
+            }
+
+            _appApiDbContext.Walks.Remove(existingWalk);
             await _appApiDbContext.SaveChangesAsync();
 
             return existingWalk;
