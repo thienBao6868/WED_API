@@ -34,5 +34,30 @@ namespace Web_API.Controllers
             return Ok(_mapper.Map<WalkDTO>(walkDomain));
 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> getAll()
+        {
+            var walksDomain = await _walkRepository.getAllAsync();
+
+            // map walksDomain to walksDTO
+
+            return Ok(_mapper.Map<List<WalkDTO>>(walksDomain));
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> getById([FromRoute] Guid id)
+        {
+            var walkDomain = await _walkRepository.getByIdAsync(id);
+            if (walkDomain == null)
+            {
+                return NotFound();
+            }
+            // map walk to walkDTO
+            return Ok(_mapper.Map<WalkDTO>(walkDomain));
+
+            
+        }
     }
 }
