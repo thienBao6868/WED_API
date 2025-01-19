@@ -34,5 +34,27 @@ namespace Web_API.Repositories.SQLRepository
             return await _appApiDbContext.Walks.Include("Region").Include("Difficulty").FirstOrDefaultAsync(x => x.Id == id);
             
         }
+
+        public async Task<Walk?> updateAsync(Guid id, Walk walk)
+        {
+            var existingWalk = await _appApiDbContext.Walks.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingWalk == null)
+            {
+                return null;
+            }
+
+            existingWalk.Name = walk.Name;
+            existingWalk.Description = walk.Description;
+            existingWalk.LengthinKm = walk.LengthinKm;
+            existingWalk.WalkImageUrl = walk.WalkImageUrl;
+            existingWalk.RegionId = walk.RegionId;
+            existingWalk.DifficultyId = walk.DifficultyId;
+
+
+            await _appApiDbContext.SaveChangesAsync();
+
+            return existingWalk;
+
+        }
     }
 }

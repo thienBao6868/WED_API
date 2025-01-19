@@ -56,8 +56,23 @@ namespace Web_API.Controllers
             }
             // map walk to walkDTO
             return Ok(_mapper.Map<WalkDTO>(walkDomain));
+        }
 
-            
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> update([FromRoute] Guid id, [FromBody] AddWalkDTO addWalkDTO)
+        {
+            // map addWalkDTO to walkDomain
+            var walkDomain = _mapper.Map<Walk>(addWalkDTO);
+
+            walkDomain = await _walkRepository.updateAsync(id, walkDomain);
+            if (walkDomain == null)
+            {
+                return NotFound();
+            }
+
+            // map walkDomain to walkDTO
+            return Ok(_mapper.Map<WalkDTO>(walkDomain));
         }
     }
 }
